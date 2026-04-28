@@ -13,8 +13,8 @@ import java.util.concurrent.Executor;
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
 
-    @Value("${app.cors.allowed-origins}")
-    private String[] allowedOrigins;
+    @Value("${app.cors.allowed-origins:}")
+    private String allowedOrigins;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
