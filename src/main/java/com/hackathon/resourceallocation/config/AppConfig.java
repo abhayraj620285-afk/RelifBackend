@@ -16,16 +16,28 @@ public class AppConfig implements WebMvcConfigurer {
     @Value("${app.cors.allowed-origins:}")
     private String allowedOrigins;
 
+    // @Override
+    // public void addCorsMappings(CorsRegistry registry) {
+    //     registry.addMapping("/api/**")
+    //           //  .allowedOrigins("http://localhost:3000", "http://localhost:5173")
+    //             .allowedOriginPatterns("https://*.vercel.app")
+    //             .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+    //             .allowedHeaders("*")
+    //             .allowCredentials(true);
+    // }
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-              //  .allowedOrigins("http://localhost:3000", "http://localhost:5173")
-                .allowedOriginPatterns("https://*.vercel.app")
+        registry.addMapping("/**")
+                .allowedOriginPatterns(
+                    "https://*.vercel.app",
+                    "http://localhost:3000",
+                    "http://localhost:5173"
+                )
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
-   // Abhay Raj
+    
     @Bean
     public Executor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
