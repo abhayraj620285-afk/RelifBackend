@@ -135,7 +135,7 @@ public class AuthService {
             throw new IllegalStateException(
                     "Coordinator self-registration is currently disabled. Contact an administrator.");
         }
-        if (!coordinatorInviteCode.equals(request.getInviteCode())) {
+        if (!coordinatorInviteCode.trim().equals(request.getInviteCode().trim())) {
             throw new IllegalArgumentException("Invalid invite code.");
         }
 
