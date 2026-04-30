@@ -20,7 +20,7 @@ public class AppConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
               //  .allowedOrigins("http://localhost:3000", "http://localhost:5173")
-                .allowedOrigins("https://relief-fronted-4qvq.vercel.app")
+                .allowedOriginPatterns("https://*.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
