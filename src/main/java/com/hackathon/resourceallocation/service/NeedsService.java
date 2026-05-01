@@ -61,7 +61,6 @@ public class NeedsService {
     // CREATE NEED
     // ─────────────────────────────────────────────────────────────
 
-    @Async
     public void triggerAsyncAnalysis(Long needId) {
         try {
             analyzeNeedAsync(needId);
@@ -108,10 +107,20 @@ public class NeedsService {
             Need need = needRepository.findById(needId)
                     .orElseThrow(() -> new RuntimeException("Need not found"));
 
-            aiService.analyzeNeed(need.getTitle(), need.getDescription());
+            AIService.AIAnalysisResult result =
+                    aiService.analyzeNeed(need.getTitle(), need.getDescription());
+
+            if (result != null) {
+                applyAnalysisResult(need, result);
+                needRepository.save(need);
+                log.info("AI analysis saved for need {}: category={} urgency={} score={}",
+                        needId, result.category(), result.urgency(), result.priorityScore());
+            } else {
+                log.warn("AI returned null for need {}", needId);
+            }
 
         } catch (Exception e) {
-            log.error("AI analysis failed safely for need {}", needId, e);
+            log.error("AI analysis failed for need {}", needId, e);
         }
     }
 

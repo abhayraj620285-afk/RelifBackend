@@ -104,8 +104,12 @@ public class ImageReportService {
     // ─────────────────────────────────────────────────────────────
 
     @Async
-    @Transactional
     public void analyzeImagesAsync(Long needId, List<NeedImage> images) {
+        doAnalyzeImages(needId, images);  // delegate to transactional method
+    }
+
+    @Transactional
+    public void doAnalyzeImages(Long needId, List<NeedImage> images) {
         log.info("Async vision analysis starting for need ID: {}", needId);
 
         needRepository.findById(needId).ifPresent(need -> {

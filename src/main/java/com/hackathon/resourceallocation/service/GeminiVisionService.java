@@ -183,7 +183,10 @@ public class GeminiVisionService {
             );
 
             String response = webClient.post()
-                    .uri(geminiApiUrl + "?key=" + geminiApiKey)
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v1/models/gemini-1.5-flash:generateContent")
+                            .queryParam("key", geminiApiKey)
+                            .build())
                     .header("Content-Type", "application/json")
                     .bodyValue(requestBody)
                     .retrieve()
