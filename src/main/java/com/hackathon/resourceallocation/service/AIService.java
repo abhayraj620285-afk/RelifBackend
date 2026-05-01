@@ -85,7 +85,12 @@ public class AIService {
             "WATER",   List.of("water","drink","contamin","borewell","tanker","pipeline","drought",
                     "dehydration","sanitation","hygiene","sewage","pani","paani","jal",
                     "sukha","pyaas"),
-            "OTHER",   List.of()
+            "OTHER", List.of(
+                    "streetlight","electricity","road","bridge","power","signal",
+                    "internet","communication","logistics","infrastructure","light",
+                    "cable","network","transport","drainage","garbage","waste",
+                    "bijli","sadak","nali","kachra"
+            )
     );
 
     private static final Map<String, List<String>> URGENCY_KEYWORDS = Map.of(
