@@ -200,9 +200,9 @@ public class AIService {
         );
 
         String response = webClient.post()
-                .uri(geminiApiUrl + "?key=" + geminiApiKey)
+                .uri(geminiApiUrl + "/v1/models/gemini-1.5-flash:generateContent?key=" + geminiApiKey)
                 .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
+                .bodyValue(requestBody)   // ← requestBody, not body
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -463,7 +463,7 @@ public class AIService {
                     "generationConfig", Map.of("temperature", 0.1, "maxOutputTokens", 300)
             );
             String response = webClient.post()
-                    .uri(geminiApiUrl + "?key=" + geminiApiKey)
+                    .uri(geminiApiUrl + "/v1/models/gemini-1.5-flash:generateContent?key=" + geminiApiKey)
                     .header("Content-Type", "application/json")
                     .bodyValue(body)
                     .retrieve()
