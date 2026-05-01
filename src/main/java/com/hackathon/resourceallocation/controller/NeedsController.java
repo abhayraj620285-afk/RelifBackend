@@ -22,7 +22,10 @@ public class NeedsController {
 
     @PostMapping
     public ResponseEntity<NeedResponse> createNeed(@Valid @RequestBody NeedRequest request) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(needsService.createNeed(request));
+        NeedResponse response = needsService.createNeed(request);
+        needsService.triggerAsyncAnalysis(response.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(needsService.createNeed(request));
     }
 
     @GetMapping("/my")

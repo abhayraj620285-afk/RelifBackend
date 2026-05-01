@@ -11,6 +11,7 @@ import com.hackathon.resourceallocation.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -60,12 +61,20 @@ public class NeedsService {
     // CREATE NEED
     // ─────────────────────────────────────────────────────────────
 
+    @Async
+    public void triggerAsyncAnalysis(Long needId) {
+        try {
+            analyzeNeedAsync(needId);
+        } catch (Exception e) {
+            log.error("Async wrapper failed safely", e);
+        }
+    }
+
     @Transactional
     public NeedResponse createNeed(NeedRequest request) {
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-//        User user = userRepository.findByEmail(auth.getName())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
         User user = userRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("User not found: " + auth.getName()));
 
@@ -78,14 +87,12 @@ public class NeedsService {
                 .reporterName(request.getReporterName())
                 .reporterContact(request.getReporterContact())
                 .status(Need.NeedStatus.OPEN)
-                .source("TEXT")                    // ✅ always set source
+                .source("TEXT")
                 .createdBy(user)
                 .build();
 
         Need saved = needRepository.save(need);
         log.info("Created new need with ID: {}", saved.getId());
-
-        analyzeNeedAsync(saved.getId());
 
         return NeedResponse.from(saved);
     }
@@ -97,21 +104,15 @@ public class NeedsService {
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void analyzeNeedAsync(Long needId) {
-        needRepository.findById(needId).ifPresent(need -> {
-            log.info("Starting async AI analysis for need ID: {}", needId);
-            try {
-                AIService.AIAnalysisResult result =
-                        aiService.analyzeNeed(need.getTitle(), need.getDescription());
+        try {
+            Need need = needRepository.findById(needId)
+                    .orElseThrow(() -> new RuntimeException("Need not found"));
 
-                applyAnalysisResult(need, result);
-                needRepository.save(need);
+            aiService.analyzeNeed(need.getTitle(), need.getDescription());
 
-                log.info("Async AI analysis complete for need ID {}: {}/{}/score {}",
-                        needId, result.category(), result.urgency(), result.priorityScore());
-            } catch (Exception e) {
-                log.error("Async AI analysis failed for need ID {}: {}", needId, e.getMessage());
-            }
-        });
+        } catch (Exception e) {
+            log.error("AI analysis failed safely for need {}", needId, e);
+        }
     }
 
     // ─────────────────────────────────────────────────────────────
