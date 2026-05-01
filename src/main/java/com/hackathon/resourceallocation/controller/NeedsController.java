@@ -22,12 +22,7 @@ public class NeedsController {
 
     @PostMapping
     public ResponseEntity<NeedResponse> createNeed(@Valid @RequestBody NeedRequest request) {
-        try {
             return ResponseEntity.status(HttpStatus.CREATED).body(needsService.createNeed(request));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
-        }
     }
 
     @GetMapping("/my")
