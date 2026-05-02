@@ -9,6 +9,5 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class ResourseAllocationApplication {
     public static void main(String[] args) {
         SpringApplication.run(ResourseAllocationApplication.class, args);
-        System.out.println();
     }
 }
