@@ -207,7 +207,7 @@ public class AIService {
         String response = webClient.post()
                 .uri(geminiApiUrl + "/v1/models/gemini-1.5-flash:generateContent?key=" + geminiApiKey)
                 .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
+                .bodyValue(requestBody)   // ← requestBody, not body
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
